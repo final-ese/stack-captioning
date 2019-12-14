@@ -139,6 +139,8 @@ def main(params):
     if params['iscmplt']==0:
         new_img=[]
         for i,img in enumerate(imgs):
+            if len(new_img) == 100:
+                break
             k=os.path.join('images', img['filename'])
             try:
                 I = skimage.io.imread(k)
@@ -146,7 +148,7 @@ def main(params):
             except:
                  print("none")
         imgs=new_img
-        
+    print("end selecting")    
     seed(123) # make reproducible
   
   # create the vocab
@@ -171,11 +173,14 @@ def main(params):
     out['ix_to_word'] = itow # encode the (1-indexed) vocab
     out['images'] = []
     for i,img in enumerate(imgs):
+        print(i)
+        print(img['split'])
+        print(img['filename'])
         jimg = {}
         jimg['split'] = img['split']
-    if 'filename' in img: jimg['file_path'] = os.path.join(img['filepath'], img['filename']) # copy it over, might need
-    if 'cocoid' in img: jimg['id'] = img['cocoid'] # copy over & mantain an id, if present (e.g. coco ids, useful)
-    out['images'].append(jimg)
+        if 'filename' in img: jimg['file_path'] = os.path.join(img['filepath'], img['filename']) # copy it over, might need
+        if 'cocoid' in img: jimg['id'] = img['cocoid'] # copy over & mantain an id, if present (e.g. coco ids, useful)
+        out['images'].append(jimg)
     json.dump(out, open(params['output_json'], 'w'))
     print('wrote ', params['output_json'])
 

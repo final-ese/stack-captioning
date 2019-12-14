@@ -33,11 +33,15 @@ def main(params):
   my_resnet = myResnet(net)
   #my_resnet.cuda()
   my_resnet.eval()
-    
+  imgs = json.load(open(params['input_json'], 'r'))
+  imgs = imgs['images']
+  N = len(imgs) 
   #get rid of images not exist
   if params['iscmplt']==0:
         new_img=[]
         for i,img in enumerate(imgs):
+            if len(new_img) == 100:
+                break
             k=os.path.join('images', img['filename'])
             try:
                 I = skimage.io.imread(k)
@@ -46,10 +50,8 @@ def main(params):
                  print("none")
         imgs=new_img
     
-  imgs = json.load(open(params['input_json'], 'r'))
-  imgs = imgs['images']
-  N = len(imgs)
 
+  print("end selecting") 
   seed(123) # make reproducible
 
   dir_fc = params['output_dir']+'_fc'
